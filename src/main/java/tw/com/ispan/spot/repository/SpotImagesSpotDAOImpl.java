@@ -15,16 +15,17 @@ import jakarta.persistence.criteria.Root;
 import tw.com.ispan.spot.domain.SpotImagesSpot;
 
 public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
-    @PersistenceContext
+	@PersistenceContext
 	private Session session;
+
 	public Session getSession() {
 		return this.session;
 	}
-	
+
 	@Override
 	public long countSpotImagesSpot(JSONObject param) {
-//		SELECT count(*) FROM SpotImagesSpot
-//		WHERE CategoryId = ? or SpotTitle like '%?%' or SpotDescription like '%?%';
+		// SELECT count(*) FROM SpotImagesSpot
+		// WHERE CategoryId = ? or SpotTitle like '%?%' or SpotDescription like '%?%';
 
 		Integer categoryId = param.isNull("categoryId") ? null : param.getInt("categoryId");
 		String spotTitle = param.isNull("spotTitle") ? null : param.getString("spotTitle");
@@ -33,37 +34,37 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 		CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
 		CriteriaQuery<Long> query = builder.createQuery(Long.class);
 
-//		from SpotImagesSpot
+		// from SpotImagesSpot
 		Root<SpotImagesSpot> table = query.from(SpotImagesSpot.class);
 
-//		select count(*)
+		// select count(*)
 		query = query.select(builder.count(table));
-	
+
 		List<Predicate> predicates = new ArrayList<>();
-		
-//		CategoryId = ?
-		if(categoryId!=null) {
+
+		// CategoryId = ?
+		if (categoryId != null && categoryId != 0) {
 			predicates.add(builder.equal(table.get("categoryId"), categoryId));
 		}
-		
-//		spotTitle like '%?%'
-		if(spotTitle!=null && spotTitle.length()!=0) {
-			predicates.add(builder.like(table.get("spotTitle"), "%"+spotTitle+"%"));
-		}
-		
-//		spotDescription like '%?%'
-		if(spotDescription!=null && spotDescription.length()!=0) {
-			predicates.add(builder.like(table.get("spotDescription"), "%"+spotDescription+"%"));
+
+		// spotTitle like '%?%'
+		if (spotTitle != null && spotTitle.length() != 0) {
+			predicates.add(builder.like(table.get("spotTitle"), "%" + spotTitle + "%"));
 		}
 
-//		where CategoryId = ? or spotTitle like '%?%' or spotDescription like '%?%'
-		if(predicates!=null && !predicates.isEmpty()) {
-			query = query.where(builder.or(predicates.toArray(new Predicate[0])));			
+		// spotDescription like '%?%'
+		if (spotDescription != null && spotDescription.length() != 0) {
+			predicates.add(builder.like(table.get("spotDescription"), "%" + spotDescription + "%"));
 		}
-		
+
+		// where CategoryId = ? or spotTitle like '%?%' or spotDescription like '%?%'
+		if (predicates != null && !predicates.isEmpty()) {
+			query = query.where(builder.or(predicates.toArray(new Predicate[0])));
+		}
+
 		TypedQuery<Long> typedQuery = this.getSession().createQuery(query);
 		Long result = typedQuery.getSingleResult();
-		if(result!=null) {
+		if (result != null) {
 			return result;
 		} else {
 			return 0;
@@ -72,9 +73,9 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 
 	@Override
 	public List<SpotImagesSpot> findSpotImagesSpot(JSONObject param) {
-//		SELECT * FROM SpotImagesSpot
-//		WHERE CategoryId = ? or SpotTitle like '%?%' or SpotDescription like '%?%'
-//		ORDER BY ??? desc
+		// SELECT * FROM SpotImagesSpot
+		// WHERE CategoryId = ? or SpotTitle like '%?%' or SpotDescription like '%?%'
+		// ORDER BY ??? desc
 
 		Integer categoryId = param.isNull("categoryId") ? null : param.getInt("categoryId");
 		String spotTitle = param.isNull("spotTitle") ? null : param.getString("spotTitle");
@@ -84,49 +85,49 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 		int rows = param.isNull("rows") ? 10 : param.getInt("rows");
 		boolean dir = param.isNull("dir") ? false : param.getBoolean("dir");
 		String sort = param.isNull("sort") ? "imageId" : param.getString("sort");
-		
+
 		CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
 		CriteriaQuery<SpotImagesSpot> query = builder.createQuery(SpotImagesSpot.class);
 
-//		from SpotImagesSpot
+		// from SpotImagesSpot
 		Root<SpotImagesSpot> table = query.from(SpotImagesSpot.class);
 
 		List<Predicate> predicates = new ArrayList<>();
-		
-//		CategoryId = ?
-		if(categoryId!=null) {
+
+		// CategoryId = ?
+		if (categoryId != null && categoryId != 0) {
 			predicates.add(builder.equal(table.get("categoryId"), categoryId));
 		}
-		
-//		spotTitle like '%?%'
-		if(spotTitle!=null && spotTitle.length()!=0) {
-			predicates.add(builder.like(table.get("spotTitle"), "%"+spotTitle+"%"));
-		}
-		
-//		spotDescription like '%?%'
-		if(spotDescription!=null && spotDescription.length()!=0) {
-			predicates.add(builder.like(table.get("spotDescription"), "%"+spotDescription+"%"));
+
+		// spotTitle like '%?%'
+		if (spotTitle != null && spotTitle.length() != 0) {
+			predicates.add(builder.like(table.get("spotTitle"), "%" + spotTitle + "%"));
 		}
 
-//		where CategoryId = ? or spotTitle like '%?%' or spotDescription like '%?%'
-		if(predicates!=null && !predicates.isEmpty()) {
-			query = query.where(builder.or(predicates.toArray(new Predicate[0])));			
+		// spotDescription like '%?%'
+		if (spotDescription != null && spotDescription.length() != 0) {
+			predicates.add(builder.like(table.get("spotDescription"), "%" + spotDescription + "%"));
 		}
-		
-		if(dir) {
-//			ORDER BY ??? desc
+
+		// where CategoryId = ? or spotTitle like '%?%' or spotDescription like '%?%'
+		if (predicates != null && !predicates.isEmpty()) {
+			query = query.where(builder.or(predicates.toArray(new Predicate[0])));
+		}
+
+		if (dir) {
+			// ORDER BY ??? desc
 			query = query.orderBy(builder.desc(table.get(sort)));
 		} else {
-//			ORDER BY ??? asc
+			// ORDER BY ??? asc
 			query = query.orderBy(builder.asc(table.get(sort)));
 		}
 
 		TypedQuery<SpotImagesSpot> typedQuery = this.getSession().createQuery(query)
 				.setFirstResult(start)
 				.setMaxResults(rows);
-		
+
 		List<SpotImagesSpot> result = typedQuery.getResultList();
-		if(result!=null && !result.isEmpty()) {
+		if (result != null && !result.isEmpty()) {
 			return result;
 		} else {
 			return null;
