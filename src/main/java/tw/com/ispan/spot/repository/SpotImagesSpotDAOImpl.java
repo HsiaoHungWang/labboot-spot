@@ -22,6 +22,16 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 		return this.session;
 	}
 
+	private Long totalCount;
+
+	public void setTotalCount(Long value) {
+		this.totalCount = value;
+	}
+
+	public Long getTotalCount() {
+		return this.totalCount;
+	}
+
 	@Override
 	public long countSpotImagesSpot(JSONObject param) {
 		// SELECT count(*) FROM SpotImagesSpot
@@ -72,8 +82,11 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 
 		TypedQuery<Long> typedQuery = this.getSession().createQuery(query);
 		Long result = typedQuery.getSingleResult();
+		this.totalCount = result;
 		if (result != null) {
+
 			return result;
+
 		} else {
 			return 0;
 		}
@@ -92,8 +105,9 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 		// param.getString("spotDescription");
 		String keyword = param.isNull("keyword") ? null : param.getString("keyword");
 
-		int start = param.isNull("start") ? 0 : param.getInt("start");
-		int rows = param.isNull("rows") ? 10 : param.getInt("rows");
+		int start = param.isNull("start") || param.getInt("start") == 0 ? 1 : param.getInt("start");
+		int rows = param.isNull("rows") ? 9
+				: param.getInt("rows") == 0 ? Math.toIntExact(this.totalCount) : param.getInt("rows");
 		boolean dir = param.isNull("dir") ? false : param.getBoolean("dir");
 		String sort = param.isNull("sort") ? "spotId" : param.getString("sort");
 
@@ -139,7 +153,7 @@ public class SpotImagesSpotDAOImpl implements SpotImagesSpotDAO {
 		}
 
 		TypedQuery<SpotImagesSpot> typedQuery = this.getSession().createQuery(query)
-				.setFirstResult(start)
+				.setFirstResult(rows * (start - 1))
 				.setMaxResults(rows);
 
 		List<SpotImagesSpot> result = typedQuery.getResultList();
