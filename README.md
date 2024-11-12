@@ -5,6 +5,8 @@
 ## 在 VS Code 中安裝執行 Java 程式的擴充程式(Extensions)
 - Java程式設計：Extension Pack for Java
 - SpringBoot程式設計：Spring Boot Extension Pack
+## 沒有JDK的下載 https://reurl.cc/WN9VWx
+
 ## 設定Extension Pack for Java：JDK位置 (要先安裝好 JDK)
 - VSCode選單=>File=>Preferences=>Settings
 - 搜尋列輸入："jdk"=>找出"Java > Jdt > Ls > Java: Home"
