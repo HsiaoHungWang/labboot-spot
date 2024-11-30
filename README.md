@@ -1,6 +1,5 @@
 ## 建立範例資料庫
 - 環境要先安裝好 SQL Server (範例資料庫使用版本 Microsoft SQL Server Developer (64-bit) 15.0.2000.5)
-- 執行 ScriptWithDB.sql，會建立資料庫、資料表，並匯入資料
 - 執行 ScriptWithTableData.sql，要自行先建立 MyDB 資料庫，此 Script 會建立資料表及匯入資料
 ## 在 VS Code 中安裝執行 Java 程式的擴充程式(Extensions)
 - Java程式設計：Extension Pack for Java
