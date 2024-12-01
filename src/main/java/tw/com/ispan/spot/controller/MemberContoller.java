@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import tw.com.ispan.spot.service.MembersService;
 
 @RestController
 @RequestMapping("/api/members")
+@CrossOrigin()
 public class MemberContoller {
 	@Autowired
 	private MembersService membersService;
@@ -61,6 +63,16 @@ public class MemberContoller {
 		} else {
 			return ResponseEntity.ok().body(members);
 		}
+    }
+    
+    @GetMapping("/{pk}")
+    public ResponseEntity<?> find(@PathVariable(name = "pk") Integer memberId) {
+        Members member = membersService.findByMemberId(memberId);
+        if (member == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(member);
+        }
     }
 
     @DeleteMapping("/{pk}")
